@@ -5,6 +5,15 @@ TOKEN = '7315085989:AAFbFytBPUvgfB7qwZ4MbeGE0vIYbAmaGzg'
 
 # Start command handler
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    # Check if the message is from a private chat and return if it is
+    if update.effective_chat.type == "private":
+        await update.message.reply_text("Sorry, this bot is only available in group chats.")
+        return
+
+    # Only respond if in a group chat or if directly called in a group
+    if update.effective_chat.type == "group" and not update.message.text.startswith(f"/start@{context.bot.username}"):
+        return
+
     # Store the user's username only if it hasn't been stored yet
     message = update.message or update.callback_query.message
     if 'username' not in context.user_data:
@@ -39,7 +48,7 @@ async def menu_handler(update: Update, context: ContextTypes.DEFAULT_TYPE) -> No
             [InlineKeyboardButton("ក្នុងករណីអ្នកមិនបានភ្ជាប់លេខទូរស័ព្ទ", callback_data='reset_without_phone')],
             [InlineKeyboardButton("Back", callback_data='back')],
         ]
-        text = f"សូមជ្រើសរើសប្រភេទនៃបញ្ហាខាងក្រោម:"
+        text = f"សូមជ្រើសរើសប្រភេទនៃបញ្ហាខាងក្រោម, {username}:"
 
     elif query.data == 'wifi':
         text = (
@@ -72,7 +81,7 @@ async def menu_handler(update: Update, context: ContextTypes.DEFAULT_TYPE) -> No
         keyboard = [[InlineKeyboardButton("Back", callback_data='back')]]
         
     elif query.data == 'contact_it':
-        text = f"ដើម្បីជជែកជាមួយក្រុមការងារ IT Center : <a href='https://t.me/ITCenter_Helpdesk_bot'> IT Center HelpDesk</a>"
+        text = f"ដើម្បីជជែកជាមួយក្រុមការងារ IT Center សូមបើកបុតនេះ: <a href='https://t.me/ITCenter_Helpdesk_bot'> 🤖 IT Center Bot</a>"
         keyboard = [[InlineKeyboardButton("Back", callback_data='back')]]
         
     else:
